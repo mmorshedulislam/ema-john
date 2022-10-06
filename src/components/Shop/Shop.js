@@ -1,16 +1,23 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { addToDb, getStoredCart } from "../../utilities/fakedb";
+import {
+  addToDb,
+  deleteShoppingCart,
+  getStoredCart,
+} from "../../utilities/fakedb";
 import Cart from "../Cart/Cart";
 import Product from "../Product/Product";
+import { Link, useLoaderData } from "react-router-dom";
 import "./Shop.css";
 
 const Shop = () => {
+  /*  
+
+  // Old system of load data
+
   // for get/set all products
-  const [products, setProducts] = useState([]);
-  // for get/set all added cart item
-  const [cart, setCart] = useState([]);
+    const [products, setProducts] = useState([]);
 
   // for all products load
   useEffect(() => {
@@ -21,7 +28,18 @@ const Shop = () => {
         // console.log("loaded products");
         setProducts(data);
       });
-  }, []);
+  }, []); 
+
+*/
+
+  const products = useLoaderData();
+  // for get/set all added cart item
+  const [cart, setCart] = useState([]);
+
+  const clearCart = () => {
+    setCart([]);
+    deleteShoppingCart();
+  };
 
   useEffect(() => {
     const storedCart = getStoredCart();
@@ -75,7 +93,7 @@ M - 49.6 e dekano hoyecilo eibabe
     } else {
       const rest = cart.filter((product) => product.id !== selectedProduct.id);
       exists.quantity = exists.quantity + 1;
-      newCart = [...rest, exists]
+      newCart = [...rest, exists];
     }
 
     // const newCart = [...cart, selectedProduct];
@@ -95,7 +113,11 @@ M - 49.6 e dekano hoyecilo eibabe
         ))}
       </div>
       <div className="cart-container">
-        <Cart cart={cart}></Cart>
+        <Cart cart={cart} clearCart={clearCart}>
+          <Link to={`/orders`}>
+            <button>Review Order</button>
+          </Link>
+        </Cart>
       </div>
     </div>
   );
