@@ -20,7 +20,11 @@ const Orders = () => {
   return (
     <div className="shop-container">
       <div className="orders-container">
-        {cart.length === 0 && <h2>You have not selected any item. Go to <Link to={'/'}>Shop</Link></h2>}
+        {cart.length === 0 && (
+          <h2>
+            You have not selected any item. Go to <Link to={"/"}>Shop</Link>
+          </h2>
+        )}
         <div>
           {cart.map((product) => (
             <ReviewItem
@@ -33,7 +37,9 @@ const Orders = () => {
       </div>
       <div className="cart-container">
         <Cart cart={cart} clearCart={clearCart}>
-          
+          <Link to={"/shipping"}>
+            <button>Proceed Shipping</button>
+          </Link>
         </Cart>
       </div>
     </div>
