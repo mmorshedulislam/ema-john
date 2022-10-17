@@ -29,7 +29,7 @@ function App() {
         },
         {
           path: "/inventory",
-          element: <Inventory />,
+          element: <PrivateRoutes><Inventory /></PrivateRoutes>,
         },
         {
           path: "/shipping",
