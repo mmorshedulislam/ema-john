@@ -12,3 +12,19 @@
 .cart-container{
     background: #FF99004D;
 }
+
+.pagination{
+    width: 30%;
+    margin: 100px auto;
+}
+
+.pagination button {
+    margin: 0 5px;
+}
+
+.pagination .selected {
+    background-color: goldenrod;
+    border: gold;
+    width: 40px;
+    padding: 7px;
+}

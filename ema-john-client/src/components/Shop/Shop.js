@@ -11,30 +11,35 @@ import Product from "../Product/Product";
 import { Link, useLoaderData } from "react-router-dom";
 import "./Shop.css";
 
+/**
+ * total : loaded
+ * perPage(size) : 10
+ * pages : count / perPage
+ * currentPage (page)
+ *
+ */
+
 const Shop = () => {
-  /*  
+  // const { products, count } = useLoaderData();
 
-  // Old system of load data
-
-  // for get/set all products
-    const [products, setProducts] = useState([]);
-
-  // for all products load
-  useEffect(() => {
-    // console.log("products load before fetch");
-    fetch("products.json")
-      .then((res) => res.json())
-      .then((data) => {
-        // console.log("loaded products");
-        setProducts(data);
-      });
-  }, []); 
-
-*/
-
-  const products = useLoaderData();
+  const [products, setProducts] = useState([]);
+  const [count, setCount] = useState(0);
   // for get/set all added cart item
   const [cart, setCart] = useState([]);
+  // current kon page e aso
+  const [cPage, setcPage] = useState(0);
+  // koto gula data dekabo
+  const [size, setSize] = useState(10);
+  const pages = Math.ceil(count / size);
+  useEffect(() => {
+    const uri = `http://localhost:5000/products?page=${cPage}&size=${size}`;
+    fetch(uri)
+      .then((res) => res.json())
+      .then((data) => {
+        setCount(data.count);
+        setProducts(data.products);
+      });
+  }, [cPage, size]);
 
   const clearCart = () => {
     setCart([]);
@@ -45,7 +50,7 @@ const Shop = () => {
     const storedCart = getStoredCart();
     const savedCart = [];
     for (const id in storedCart) {
-      const addedProduct = products.find((product) => id === product.id);
+      const addedProduct = products.find((product) => id === product._id);
       if (addedProduct) {
         const quantity = storedCart[id];
         addedProduct.quantity = quantity;
@@ -54,30 +59,6 @@ const Shop = () => {
     }
     setCart(savedCart);
   }, [products]);
-
-  /*   
-M - 49.6 e dekano hoyecilo eibabe
-
-// for existing added product from local storage
-  useEffect(() => {
-    console.log("local storage first line.", products);
-    const storedCart = getStoredCart();
-    // console.log(storedCart);
-    const savedCart = [];
-    for (const id in storedCart) {
-      const addedProduct = products.find((product) => product.id === id);
-      if (addedProduct) {
-        // console.log(addedProduct);
-        const quantity = storedCart[id];
-        addedProduct.quantity = quantity;
-        savedCart.push(addedProduct);
-      }
-      // console.log(addedProduct);
-    }
-    setCart(savedCart);
-    console.log("local storage finished");
-  }, [products]);
- */
 
   // addToCart button e data patanor jonno
   const handleAddToCart = (selectedProduct) => {
@@ -86,19 +67,21 @@ M - 49.6 e dekano hoyecilo eibabe
     // do not do this: cart.push(product);
 
     let newCart = [];
-    const exists = cart.find((product) => product.id === selectedProduct.id);
+    const exists = cart.find((product) => product._id === selectedProduct._id);
     if (!exists) {
       selectedProduct.quantity = 1;
       newCart = [...cart, selectedProduct];
     } else {
-      const rest = cart.filter((product) => product.id !== selectedProduct.id);
+      const rest = cart.filter(
+        (product) => product._id !== selectedProduct._id
+      );
       exists.quantity = exists.quantity + 1;
       newCart = [...rest, exists];
     }
 
     // const newCart = [...cart, selectedProduct];
     setCart(newCart);
-    addToDb(selectedProduct.id);
+    addToDb(selectedProduct._id);
   };
 
   return (
@@ -106,7 +89,7 @@ M - 49.6 e dekano hoyecilo eibabe
       <div className="products-container">
         {products.map((product) => (
           <Product
-            key={product.id}
+            key={product._id}
             product={product}
             handleAddToCart={handleAddToCart}
           ></Product>
@@ -118,6 +101,28 @@ M - 49.6 e dekano hoyecilo eibabe
             <button>Review Order</button>
           </Link>
         </Cart>
+      </div>
+      <div className="pagination">
+        <p>
+          Current page: {cPage} Size: {size}
+        </p>
+        {[...Array(pages).keys()].map((number) => (
+          <button
+            key={number}
+            className={cPage === number && "selected"}
+            onClick={() => setcPage(number)}
+          >
+            {number + 1}
+          </button>
+        ))}
+        <select onChange={(event) => setSize(event.target.value)}>
+          <option value="5">5</option>
+          <option value="10" selected>
+            10
+          </option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+        </select>
       </div>
     </div>
   );

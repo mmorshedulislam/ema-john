@@ -6,7 +6,7 @@ import "./ReviewItem.css";
 
 const ReviewItem = ({ product, handleRemoveItem }) => {
   const { img, name, price, shipping, quantity } = product;
-//   console.log(product);
+  //   console.log(product);
   return (
     <div className="review-item">
       <div>
@@ -25,9 +25,12 @@ const ReviewItem = ({ product, handleRemoveItem }) => {
             <small>Quantity: {quantity}</small>
           </p>
         </div>
-        <div onClick={() => handleRemoveItem(product.id)} className="review-delete-btn">
+        <div
+          onClick={() => handleRemoveItem(product._id)}
+          className="review-delete-btn"
+        >
           <button className="delete-btn">
-          <FontAwesomeIcon className="delete-icon" icon={faTrashCan} />
+            <FontAwesomeIcon className="delete-icon" icon={faTrashCan} />
           </button>
         </div>
       </div>
