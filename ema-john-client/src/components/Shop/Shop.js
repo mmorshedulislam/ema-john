@@ -62,18 +62,16 @@ const Shop = () => {
       .then((res) => res.json())
       .then((data) => {
         console.log("by ids", data);
+        for (const id in storedCart) {
+          const addedProduct = data.find((product) => id === product._id);
+          if (addedProduct) {
+            const quantity = storedCart[id];
+            addedProduct.quantity = quantity;
+            savedCart.push(addedProduct);
+          }
+        }
+        setCart(savedCart);
       });
-
-    // ager local system e cilo
-    for (const id in storedCart) {
-      const addedProduct = products.find((product) => id === product._id);
-      if (addedProduct) {
-        const quantity = storedCart[id];
-        addedProduct.quantity = quantity;
-        savedCart.push(addedProduct);
-      }
-    }
-    setCart(savedCart);
   }, [products]);
 
   // addToCart button e data patanor jonno
