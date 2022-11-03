@@ -29,10 +29,23 @@ async function run() {
       const query = {};
       const cursor = productCollection.find(query);
       //   const products = await cursor.limit(10).toArray();
-      const products = await cursor.skip(page*size).limit(size).toArray();
+      const products = await cursor
+        .skip(page * size)
+        .limit(size)
+        .toArray();
       const count = await productCollection.estimatedDocumentCount();
       res.send({ count, products });
     });
+
+    app.post("/productsByIds", async (req, res) => {
+      const ids = req.body;
+      const query = { _id: { $in: ids } };
+      console.log(query);
+      const cursor = productCollection.find(query);
+      const result = cursor.toArray();
+    });
+  } catch (err) {
+    console.log(err);
   } finally {
   }
 }
